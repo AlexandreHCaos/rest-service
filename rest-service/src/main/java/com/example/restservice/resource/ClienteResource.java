@@ -1,7 +1,7 @@
 package com.example.restservice.resource;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,22 +29,27 @@ public class ClienteResource {
 	
 	@GetMapping(produces= { MediaType.APPLICATION_JSON_VALUE, 
 			MediaType.APPLICATION_XML_VALUE })
-	public List<Cliente> Buscar() {
-		return this.clienteRepository.findAll();
+	public Page<Cliente> Buscar(@RequestParam(required = false, defaultValue = "0") int page) {
+		System.out.println(page);
+		return this.clienteRepository.findAll(PageRequest.of(page, 5));
 	}
 	
-	@GetMapping(path="/nome", produces={ MediaType.APPLICATION_JSON_VALUE, 
-			MediaType.APPLICATION_XML_VALUE })
+	@GetMapping(path="/nome",
+			produces={ MediaType.APPLICATION_JSON_VALUE, 
+					MediaType.APPLICATION_XML_VALUE })
 	@ResponseBody
-	public List<Cliente> BuscarPorNome(@RequestParam String name ) {
-		return this.clienteRepository.findByNameLike("%"+name+"%");
+	public Page<Cliente> BuscarPorNome(@RequestParam String name, 
+			@RequestParam(required = false, defaultValue = "0") int page) {
+		return this.clienteRepository.findByNameLike("%"+name+"%", PageRequest.of(page, 5));
 	}
 	
-	@GetMapping(path="/cpf", produces={ MediaType.APPLICATION_JSON_VALUE, 
-			MediaType.APPLICATION_XML_VALUE })
+	@GetMapping(path="/cpf", 
+			produces={ MediaType.APPLICATION_JSON_VALUE, 
+					MediaType.APPLICATION_XML_VALUE })
 	@ResponseBody
-	public List<Cliente> BuscarPorCpf(@RequestParam String cpf) {
-		return this.clienteRepository.findByCpf(cpf);
+	public Page<Cliente> BuscarPorCpf(@RequestParam String cpf, 
+			@RequestParam(required = false, defaultValue = "0") int page) {
+		return this.clienteRepository.findByCpf(cpf, PageRequest.of(page, 5));
 	}
 
 	@PostMapping(produces={ MediaType.APPLICATION_JSON_VALUE, 
@@ -54,8 +59,9 @@ public class ClienteResource {
 		this.clienteRepository.save(cliente);
 	}
 	
-	@DeleteMapping(path="/{id}", produces={ MediaType.APPLICATION_JSON_VALUE, 
-			MediaType.APPLICATION_XML_VALUE })
+	@DeleteMapping(path="/{id}", 
+			produces={ MediaType.APPLICATION_JSON_VALUE, 
+					MediaType.APPLICATION_XML_VALUE })
 	public void Remover(@PathVariable Long id) {
 		this.clienteRepository.deleteById(id);
 	}
