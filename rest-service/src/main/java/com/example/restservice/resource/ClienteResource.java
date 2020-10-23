@@ -2,6 +2,7 @@ package com.example.restservice.resource;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,35 +27,41 @@ public class ClienteResource {
 		this.clienteRepository = clienteRepository;
 	}
 	
-	@GetMapping
+	@GetMapping(produces= { MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE })
 	public List<Cliente> Buscar() {
 		return this.clienteRepository.findAll();
 	}
 	
-	@GetMapping("/nome")
+	@GetMapping(path="/nome", produces={ MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE })
 	@ResponseBody
 	public List<Cliente> BuscarPorNome(@RequestParam String name ) {
 		return this.clienteRepository.findByNameLike("%"+name+"%");
 	}
 	
-	@GetMapping("/cpf")
+	@GetMapping(path="/cpf", produces={ MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE })
 	@ResponseBody
 	public List<Cliente> BuscarPorCpf(@RequestParam String cpf) {
 		return this.clienteRepository.findByCpf(cpf);
 	}
 
-	@PostMapping
+	@PostMapping(produces={ MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE })
 	public void Criar(@RequestBody Cliente cliente) {
 		cliente.setCpf(cliente.getCpf().replace(".", "").replace("-", ""));
 		this.clienteRepository.save(cliente);
 	}
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping(path="/{id}", produces={ MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE })
 	public void Remover(@PathVariable Long id) {
 		this.clienteRepository.deleteById(id);
 	}
 	
-	@PutMapping
+	@PutMapping(produces={ MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE })
 	public void Atualizar(@RequestBody Cliente cliente) {
 		cliente.setCpf(cliente.getCpf().replace(".", "").replace("-", ""));
 		this.clienteRepository.save(cliente);
