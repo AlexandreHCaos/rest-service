@@ -56,6 +56,7 @@ public class ClienteResource {
 	
 	@PutMapping
 	public void Atualizar(@RequestBody Cliente cliente) {
+		cliente.setCpf(cliente.getCpf().replace(".", "").replace("-", ""));
 		this.clienteRepository.save(cliente);
 	}
 	
