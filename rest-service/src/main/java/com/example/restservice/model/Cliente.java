@@ -1,9 +1,5 @@
 package com.example.restservice.model;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -43,13 +39,6 @@ public class Cliente {
 		return data_de_nascimento;
 	}
 	public void setData_de_nascimento(String data_de_nascimento) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate nova_data_de_nascimento = LocalDate.parse(data_de_nascimento, formatter);
-		
-		LocalDate today = LocalDate.now();
-		Period periodo = Period.between(nova_data_de_nascimento, today);
-
-		setIdade(periodo.getYears());
 		this.data_de_nascimento = data_de_nascimento;
 	}
 	public Integer getIdade() {

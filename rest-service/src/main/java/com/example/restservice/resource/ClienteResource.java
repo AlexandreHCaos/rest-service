@@ -16,47 +16,49 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restservice.model.Cliente;
 import com.example.restservice.repository.ClienteRepository;
+import com.example.restservice.service.ClienteService;
 
 @RestController
 @RequestMapping(value="/v1/clientes")
 public class ClienteResource {
 
 	private final ClienteRepository clienteRepository;
+	private final ClienteService clienteService;
 	
-	public ClienteResource(ClienteRepository clienteRepository) {
+	public ClienteResource(ClienteRepository clienteRepository, ClienteService clienteService) {
 		this.clienteRepository = clienteRepository;
+		this.clienteService = clienteService;
 	}
 	
 	@GetMapping(produces= { MediaType.APPLICATION_JSON_VALUE, 
 			MediaType.APPLICATION_XML_VALUE })
 	public Page<Cliente> Buscar(@RequestParam(required = false, defaultValue = "0") int page) {
-		System.out.println(page);
 		return this.clienteRepository.findAll(PageRequest.of(page, 5));
 	}
 	
-	@GetMapping(path="/nome",
+	@GetMapping(path="/cpf/{cpf}", 
 			produces={ MediaType.APPLICATION_JSON_VALUE, 
 					MediaType.APPLICATION_XML_VALUE })
 	@ResponseBody
-	public Page<Cliente> BuscarPorNome(@RequestParam String name, 
-			@RequestParam(required = false, defaultValue = "0") int page) {
-		return this.clienteRepository.findByNameLike("%"+name+"%", PageRequest.of(page, 5));
-	}
-	
-	@GetMapping(path="/cpf", 
-			produces={ MediaType.APPLICATION_JSON_VALUE, 
-					MediaType.APPLICATION_XML_VALUE })
-	@ResponseBody
-	public Page<Cliente> BuscarPorCpf(@RequestParam String cpf, 
+	public Page<Cliente> BuscarPorCpf(@PathVariable String cpf, 
 			@RequestParam(required = false, defaultValue = "0") int page) {
 		return this.clienteRepository.findByCpf(cpf, PageRequest.of(page, 5));
 	}
 
+	@GetMapping(path="/nome/{name}",
+			produces={ MediaType.APPLICATION_JSON_VALUE, 
+					MediaType.APPLICATION_XML_VALUE })
+	@ResponseBody
+	public Page<Cliente> BuscarPorNome(@PathVariable String name, 
+			@RequestParam(required = false, defaultValue = "0") int page) {
+		return this.clienteRepository.findByNameLike(name, PageRequest.of(page, 5));
+	}
+	
+
 	@PostMapping(produces={ MediaType.APPLICATION_JSON_VALUE, 
 			MediaType.APPLICATION_XML_VALUE })
-	public void Criar(@RequestBody Cliente cliente) {
-		cliente.setCpf(cliente.getCpf().replace(".", "").replace("-", ""));
-		this.clienteRepository.save(cliente);
+	public Cliente Criar(@RequestBody Cliente cliente) {
+		return this.clienteService.salvar(cliente);
 	}
 	
 	@DeleteMapping(path="/{id}", 
@@ -68,9 +70,8 @@ public class ClienteResource {
 	
 	@PutMapping(produces={ MediaType.APPLICATION_JSON_VALUE, 
 			MediaType.APPLICATION_XML_VALUE })
-	public void Atualizar(@RequestBody Cliente cliente) {
-		cliente.setCpf(cliente.getCpf().replace(".", "").replace("-", ""));
-		this.clienteRepository.save(cliente);
+	public Cliente Atualizar(@RequestBody Cliente cliente) {
+		return this.clienteService.salvar(cliente);
 	}
 	
 }
