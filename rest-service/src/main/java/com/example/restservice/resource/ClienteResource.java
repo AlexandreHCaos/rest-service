@@ -56,7 +56,9 @@ public class ClienteResource {
 	
 
 	@PostMapping(produces={ MediaType.APPLICATION_JSON_VALUE, 
-			MediaType.APPLICATION_XML_VALUE })
+			MediaType.APPLICATION_XML_VALUE },
+			consumes = { MediaType.APPLICATION_JSON_VALUE, 
+					MediaType.APPLICATION_XML_VALUE })
 	public Cliente Criar(@RequestBody Cliente cliente) {
 		return this.clienteService.salvar(cliente);
 	}
@@ -69,7 +71,9 @@ public class ClienteResource {
 	}
 	
 	@PutMapping(produces={ MediaType.APPLICATION_JSON_VALUE, 
-			MediaType.APPLICATION_XML_VALUE })
+				MediaType.APPLICATION_XML_VALUE },
+			consumes = { MediaType.APPLICATION_JSON_VALUE, 
+					MediaType.APPLICATION_XML_VALUE })
 	public Cliente Atualizar(@RequestBody Cliente cliente) {
 		return this.clienteService.salvar(cliente);
 	}
